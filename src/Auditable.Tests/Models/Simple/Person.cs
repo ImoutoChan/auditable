@@ -1,7 +1,7 @@
 ﻿namespace Auditable.Tests.Models.Simple
 {
     /// <summary>
-    /// simple person
+    ///     simple person
     /// </summary>
     public class Person
     {

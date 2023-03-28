@@ -1,24 +1,24 @@
-﻿namespace Auditable
-{
-    using System.Runtime.InteropServices;
-    using System.Threading.Tasks;
-    using Collectors.EntityId;
-    using Delta;
-    using Infrastructure;
-    using Microsoft.Extensions.Logging;
-    using Parsing;
-    using Writers;
+﻿using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Auditable.Collectors.EntityId;
+using Auditable.Delta;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Writers;
+using Microsoft.Extensions.Logging;
 
+namespace Auditable
+{
     public class AuditableContext : IInternalAuditableContext
     {
-        private readonly IParser _parser;
-        private readonly IEntityIdCollector _entityIdCollector;
-        private readonly JsonSerializer _serializer;
-        private readonly IDifferenceEngine _engine;
-        private readonly IWriter _writer;
         private readonly IAuditIdGenerator _auditIdGenerator;
+        private readonly IDifferenceEngine _engine;
+        private readonly IEntityIdCollector _entityIdCollector;
         private readonly ILogger<AuditableContext> _logger;
+        private readonly IParser _parser;
+        private readonly JsonSerializer _serializer;
         private readonly TargetCollection _target;
+        private readonly IWriter _writer;
         private string _name;
 
         public AuditableContext(
@@ -48,7 +48,7 @@
                 var copy = _serializer.Serialize(instance);
                 var id = _entityIdCollector.Extract(instance);
                 var type = instance.GetType();
-    
+
                 var target = new Target
                 {
                     Type = type.FullName,
@@ -64,7 +64,7 @@
 
         public void Removed<T>(string id)
         {
-            Code.Require(()=> !string.IsNullOrEmpty(id), nameof(id));
+            Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
             SetExplicateAction<T>(id, AuditType.Removed);
         }
 
@@ -72,6 +72,53 @@
         {
             Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
             SetExplicateAction<T>(id, AuditType.Read);
+        }
+
+        public async Task WriteLog()
+        {
+            foreach (var target in _target)
+            {
+                if (target.ActionStyle == ActionStyle.Explicit) continue;
+
+                var possibleChange = _serializer.Serialize(target.Instance);
+                var diff = _engine.Differences(target.Before, possibleChange);
+                target.Delta = diff;
+            }
+
+            var id = _auditIdGenerator.GenerateId();
+            var parsedOutput = await _parser.Parse(id, _name, _target);
+            await _writer.Write(id, _name, parsedOutput);
+            _logger.LogDebug($"wrote autiable entry: {id}");
+        }
+
+        public void SetName(string name)
+        {
+            Code.Require(() => !string.IsNullOrEmpty(name), nameof(name));
+            _name = name;
+        }
+
+
+        /// <summary>
+        ///     this will write the audit log if the code did not throw an exception
+        /// </summary>
+        public void Dispose()
+        {
+            DisposeAsync().AsTask().Wait();
+        }
+
+        /// <summary>
+        ///     this will write the audit log if the code did not throw an exception
+        /// </summary>
+        /// <remarks>
+        ///     https://stackoverflow.com/questions/149609/c-sharp-using-syntax
+        ///     https://ayende.com/blog/2577/did-you-know-find-out-if-an-exception-was-thrown-from-a-finally-block
+        /// </remarks>
+        public async ValueTask DisposeAsync()
+        {
+            if (Marshal.GetExceptionCode() == 0)
+                await WriteLog();
+            else
+                _logger.LogDebug("code had an exception, will not write the audit entry");
         }
 
         private void SetExplicateAction<T>(string id, AuditType action)
@@ -93,61 +140,6 @@
 
             target.ActionStyle = ActionStyle.Explicit;
             target.AuditType = action;
-         }
-
-        public async Task WriteLog()
-        {
-            foreach (var target in _target)
-            {
-                if (target.ActionStyle == ActionStyle.Explicit)
-                {
-                    continue;
-                }
-
-                var possibleChange = _serializer.Serialize(target.Instance);
-                var diff = _engine.Differences(target.Before, possibleChange);
-                target.Delta = diff;
-            }
-
-            var id = _auditIdGenerator.GenerateId();
-            var parsedOutput = await _parser.Parse(id, _name, _target);
-            await _writer.Write(id, _name, parsedOutput);
-            _logger.LogDebug($"wrote autiable entry: {id}");
-        }
-
-        public void SetName(string name)
-        {
-            Code.Require(() => !string.IsNullOrEmpty(name), nameof(name));
-            _name = name;
-        }
-
-
-
-        /// <summary>
-        /// this will write the audit log if the code did not throw an exception
-        /// </summary>
-        public void Dispose()
-        {
-            DisposeAsync().AsTask().Wait();
-        }
-
-        /// <summary>
-        /// this will write the audit log if the code did not throw an exception
-        /// </summary>
-        /// <remarks>
-        /// https://stackoverflow.com/questions/149609/c-sharp-using-syntax
-        /// https://ayende.com/blog/2577/did-you-know-find-out-if-an-exception-was-thrown-from-a-finally-block
-        /// </remarks>
-        public async ValueTask DisposeAsync()
-        {
-            if (Marshal.GetExceptionCode() == 0)
-            {
-                await WriteLog();
-            }
-            else
-            {
-                _logger.LogDebug("code had an exception, will not write the audit entry");
-            }
         }
     }
 }

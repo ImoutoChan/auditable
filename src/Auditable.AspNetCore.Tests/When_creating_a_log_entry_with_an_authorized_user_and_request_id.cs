@@ -1,28 +1,29 @@
-﻿namespace Auditable.AspNetCore.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using Collectors;
-    using global::Auditable.Collectors;
-    using global::Auditable.Collectors.Initiator;
-    using global::Auditable.Collectors.Request;
-    using global::Auditable.Infrastructure;
-    using global::Auditable.Tests;
-    using global::Auditable.Tests.Models.Simple;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-    using Parsing;
-    using Writers;
-    using Environment = global::Auditable.Collectors.Environment.Environment;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using Auditable.AspNetCore.Tests.Infrastructure;
+using Auditable.Collectors.Initiator;
+using Auditable.Collectors.Request;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Tests;
+using Auditable.Tests.Models.Simple;
+using Auditable.Writers;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using Environment = Auditable.Collectors.Environment.Environment;
 
+namespace Auditable.AspNetCore.Tests
+{
     [Subject("auditable")]
     public class When_creating_a_log_entry_with_an_authorized_user_and_request_id
     {
-        static CustomWebApplicationFactory<Startup> _factory;
-        static TestWriter _writer;
-        static HttpClient _client;
+        private static CustomWebApplicationFactory<Startup> _factory;
+        private static TestWriter _writer;
+        private static HttpClient _client;
+
+
+        private Cleanup after = () => _factory.Dispose();
 
 
         private Establish context = () =>
@@ -35,25 +36,22 @@
             });
 
 
-            
             _client = _factory.CreateClient();
             //"traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
-            _client.DefaultRequestHeaders.Add("traceparent", new []{ "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01" });
+            _client.DefaultRequestHeaders.Add("traceparent",
+                new[] { "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01" });
         };
 
-        Because of = () => _client.GetAsync("/test").Await();
+        private Because of = () => _client.GetAsync("/test").Await();
 
-        It should_add_the_expected_log_entry = () =>
+        private It should_add_the_expected_log_entry = () =>
             Helpers.Compare(_writer.First.Deserialize(), _expeted, comparer =>
             {
                 comparer.IgnoreMember("Delta");
                 comparer.IgnoreMember("SpanId");
             });
 
-
-        Cleanup after = () => _factory.Dispose(); 
-
-        static AuditableEntry _expeted => new AuditableEntry
+        private static AuditableEntry _expeted => new()
         {
             Id = Helpers.AuditId,
             Action = "test.get",
@@ -75,7 +73,7 @@
             },
             Targets = new List<AuditableTarget>
             {
-                new AuditableTarget
+                new()
                 {
                     Id = "123",
                     Audit = AuditType.Read,
@@ -84,6 +82,5 @@
                 }
             }
         };
-
     }
 }

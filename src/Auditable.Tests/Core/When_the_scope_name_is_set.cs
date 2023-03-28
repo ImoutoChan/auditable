@@ -1,16 +1,19 @@
-﻿namespace Auditable.Tests.Core
-{
-    using System;
-    using Configuration;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-    using Models.Simple;
-    using PowerAssert;
+﻿using System;
+using Auditable.Configuration;
+using Auditable.Infrastructure;
+using Auditable.Tests.Models.Simple;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using PowerAssert;
 
+namespace Auditable.Tests.Core
+{
     [Subject("auditable")]
     public class When_the_scope_name_is_set
     {
+        private static IAuditableContext _subject;
+        private static TestWriter _writer;
+
         private Establish context = () =>
         {
             SystemDateTime.SetDateTime(() => new DateTime(1980, 01, 02, 10, 30, 15, DateTimeKind.Utc));
@@ -31,14 +34,9 @@
             person.Age = 21;
         };
 
-        Because of = () => _subject.WriteLog().Await();
+        private Because of = () => _subject.WriteLog().Await();
 
-        It should_log_an_entry_with_the_action_name_set = () =>
+        private It should_log_an_entry_with_the_action_name_set = () =>
             PAssert.IsTrue(() => _writer.First.Deserialize().Action == "Person.Modified");
-
-        static IAuditableContext _subject;
-        static TestWriter _writer;
-
-
     }
 }

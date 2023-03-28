@@ -1,11 +1,10 @@
-﻿namespace Auditable.AspNetCore;
-
-using Configuration;
+﻿using Auditable.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace Auditable.AspNetCore;
 
 /// <summary>
-/// this is recommended way to register the ASPNET dependencies.
+///     this is recommended way to register the ASPNET dependencies.
 /// </summary>
 public class AspNet : IExtension
 {

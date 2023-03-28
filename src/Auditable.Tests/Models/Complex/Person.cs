@@ -1,10 +1,12 @@
-﻿namespace Auditable.Tests.Models.Complex
-{
-    using System;
+﻿using System;
 
+namespace Auditable.Tests.Models.Complex
+{
     public class Person : EntityRoot
     {
-        protected Person() { }
+        protected Person()
+        {
+        }
 
         public Person(string name)
         {

@@ -1,6 +1,6 @@
-﻿namespace Auditable.Delta;
+﻿using Newtonsoft.Json.Linq;
 
-using Newtonsoft.Json.Linq;
+namespace Auditable.Delta;
 
 public interface IDifferenceEngine
 {

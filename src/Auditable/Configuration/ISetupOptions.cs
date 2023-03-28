@@ -1,6 +1,6 @@
-﻿namespace Auditable.Configuration;
+﻿using System;
 
-using System;
+namespace Auditable.Configuration;
 
 public interface ISetupOptions<out T> where T : class, new()
 {

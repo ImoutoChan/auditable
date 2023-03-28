@@ -1,21 +1,23 @@
-﻿using Env = Auditable.Collectors.Environment.Environment;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Auditable.Configuration;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Tests.Models.Simple;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using PowerAssert;
+using Env = Auditable.Collectors.Environment.Environment;
 
 namespace Auditable.Tests.Core.Observed
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Configuration;
-    using global::Auditable.Parsing;
-    using global::Auditable.Tests.Models.Simple;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-    using PowerAssert;
-
     [Subject("auditable")]
     public class When_auditing_observed_change
     {
+        private static IAuditableContext _subject;
+        private static TestWriter _writer;
+
         private Establish context = () =>
         {
             SystemDateTime.SetDateTime(() => new DateTime(1980, 01, 02, 10, 3, 15, DateTimeKind.Utc));
@@ -35,21 +37,21 @@ namespace Auditable.Tests.Core.Observed
             _subject.WatchTargets(person);
 
             person.Age = 123;
-
         };
 
-        Because of = () => _subject.WriteLog().Await();
+        private Because of = () => _subject.WriteLog().Await();
 
-        It should_have_a_target_with_audit_modified = () =>
-            Helpers.Compare(_writer.First.Deserialize(), _expeted, comparer => comparer.IgnoreMember("Delta"));
-
-        It should_have_a_deltas_entry =
+        private It should_have_a_deltas_entry =
             () => PAssert.IsTrue(() => _writer.First.Deserialize().Targets.First().Delta != null);
 
-        It should_have_recorded_a_delta =
-            () => Helpers.AssertDelta<Person, int>(_writer.First.Deserialize().Targets.First().Delta, p => p.Age, 24, 123);
+        private It should_have_a_target_with_audit_modified = () =>
+            Helpers.Compare(_writer.First.Deserialize(), _expeted, comparer => comparer.IgnoreMember("Delta"));
 
-        static AuditableEntry _expeted => new AuditableEntry
+        private It should_have_recorded_a_delta =
+            () => Helpers.AssertDelta<Person, int>(_writer.First.Deserialize().Targets.First().Delta, p => p.Age, 24,
+                123);
+
+        private static AuditableEntry _expeted => new()
         {
             Id = Helpers.AuditId,
             Action = "Person.Read",
@@ -63,7 +65,7 @@ namespace Auditable.Tests.Core.Observed
             Request = null,
             Targets = new List<AuditableTarget>
             {
-                new AuditableTarget
+                new()
                 {
                     Id = "abc",
                     Audit = AuditType.Modified,
@@ -72,8 +74,5 @@ namespace Auditable.Tests.Core.Observed
                 }
             }
         };
-
-        static IAuditableContext _subject;
-        static TestWriter _writer;
     }
 }

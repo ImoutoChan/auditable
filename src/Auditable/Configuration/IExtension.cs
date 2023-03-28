@@ -1,15 +1,14 @@
-﻿namespace Auditable.Configuration;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.Extensions.DependencyInjection;
-
+namespace Auditable.Configuration;
 
 /// <summary>
-/// allows the extension to apply IoC setup/overrides
+///     allows the extension to apply IoC setup/overrides
 /// </summary>
 public interface IExtension
 {
     /// <summary>
-    /// internal to setup the dependencies and options
+    ///     internal to setup the dependencies and options
     /// </summary>
     /// <param name="services">the IoC setup</param>
     void RegisterServices(IServiceCollection services);

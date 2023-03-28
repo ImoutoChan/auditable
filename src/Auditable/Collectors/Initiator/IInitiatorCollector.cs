@@ -1,9 +1,9 @@
-﻿namespace Auditable.Collectors.Initiator;
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+namespace Auditable.Collectors.Initiator;
 
 /// <summary>
-/// Grab information about the user who is acting the action
+///     Grab information about the user who is acting the action
 /// </summary>
 public interface IInitiatorCollector
 {

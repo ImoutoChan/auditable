@@ -1,21 +1,32 @@
-﻿namespace Auditable;
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Collectors.EntityId;
-using Infrastructure;
+using Auditable.Collectors.EntityId;
+using Auditable.Infrastructure;
+
+namespace Auditable;
 
 internal class TargetCollection : IEnumerable<Target>
 {
     private readonly IEntityIdCollector _idCollector;
-    private readonly Dictionary<object, Target> _instanceLookup = new Dictionary<object, Target>();
-    private readonly Dictionary<string, Target> _idLookup = new Dictionary<string, Target>();
-  
+    private readonly Dictionary<string, Target> _idLookup = new();
+    private readonly Dictionary<object, Target> _instanceLookup = new();
+
     public TargetCollection(IEntityIdCollector idCollector)
     {
         _idCollector = idCollector;
+    }
+
+    public IEnumerator<Target> GetEnumerator()
+    {
+        var items = _idLookup.Values.Union(_instanceLookup.Values);
+        return items.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
     public bool TryGet(object instance, Type type, string id, out Target target)
@@ -35,7 +46,7 @@ internal class TargetCollection : IEnumerable<Target>
     public bool TryGet(Type type, string id, out Target target)
     {
         Code.Require(() => type != null, nameof(type));
-        Code.Require(()=> !string.IsNullOrEmpty(id), nameof(id));
+        Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
 
         var key = GetKey(type, id);
         return _idLookup.TryGetValue(key, out target);
@@ -54,10 +65,7 @@ internal class TargetCollection : IEnumerable<Target>
 
         var key = GetKey(type, id);
 
-        if (_idLookup.ContainsKey(key))
-        {
-            return;
-        }
+        if (_idLookup.ContainsKey(key)) return;
 
         _idLookup.Add(key, target);
     }
@@ -78,22 +86,8 @@ internal class TargetCollection : IEnumerable<Target>
         }
 
         var processedInstance = _instanceLookup.ContainsKey(instance);
-        if (processedInstance)
-        {
-            return;
-        }
+        if (processedInstance) return;
 
         _instanceLookup.Add(instance, target);
-    }
-
-    public IEnumerator<Target> GetEnumerator()
-    { 
-        var items = _idLookup.Values.Union(_instanceLookup.Values);
-        return items.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

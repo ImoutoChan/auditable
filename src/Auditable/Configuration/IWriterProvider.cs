@@ -1,6 +1,8 @@
 ﻿namespace Auditable.Configuration;
 
 /// <summary>
-/// setup a writer
+///     setup a writer
 /// </summary>
-public interface IWriterProvider : IExtension { }
+public interface IWriterProvider : IExtension
+{
+}

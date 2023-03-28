@@ -1,9 +1,9 @@
-﻿namespace Auditable.Collectors.Request;
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+namespace Auditable.Collectors.Request;
 
 /// <summary>
-/// grab information about the request (tracing)
+///     grab information about the request (tracing)
 /// </summary>
 public interface IRequestContextCollector
 {

@@ -1,6 +1,6 @@
-﻿namespace Auditable.Infrastructure;
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
+namespace Auditable.Infrastructure;
 
 public class JsonSerializer
 {

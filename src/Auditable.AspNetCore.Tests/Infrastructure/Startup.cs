@@ -1,11 +1,11 @@
-﻿namespace Auditable.AspNetCore.Tests.Infrastructure
-{
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using OpenTelemetry.Trace;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Trace;
 
+namespace Auditable.AspNetCore.Tests.Infrastructure
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -18,9 +18,8 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
             services.AddOpenTelemetry().WithTracing(
-                (builder) => builder
+                builder => builder
                     .AddAspNetCoreInstrumentation()
                     .AddConsoleExporter()
             );
@@ -43,11 +42,7 @@
             //ensure its after auth*
             app.UseAuditable();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

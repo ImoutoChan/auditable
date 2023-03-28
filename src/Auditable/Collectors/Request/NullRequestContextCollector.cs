@@ -1,6 +1,6 @@
-﻿namespace Auditable.Collectors.Request;
+﻿using System.Threading.Tasks;
 
-using System.Threading.Tasks;
+namespace Auditable.Collectors.Request;
 
 public class NullRequestContextCollector : IRequestContextCollector
 {

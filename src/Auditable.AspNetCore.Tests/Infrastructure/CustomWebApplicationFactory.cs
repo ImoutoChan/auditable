@@ -1,15 +1,14 @@
-﻿namespace Auditable.AspNetCore.Tests.Infrastructure
-{
-    using System;
-    using Configuration;
-    using global::Auditable.Tests;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc.Testing;
-    using Microsoft.AspNetCore.TestHost;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Writers.File;
+﻿using System;
+using Auditable.Configuration;
+using Auditable.Tests;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
+namespace Auditable.AspNetCore.Tests.Infrastructure
+{
     public class CustomWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
@@ -30,10 +29,7 @@
                     conf.Use<AspNet>();
                     //conf.UseWriter<File>();
                 })
-                .ConfigureWebHostDefaults(x =>
-                {
-                    x.UseStartup<TStartup>().UseTestServer();
-                });
+                .ConfigureWebHostDefaults(x => { x.UseStartup<TStartup>().UseTestServer(); });
             return builder;
         }
 
@@ -41,7 +37,6 @@
         {
             builder.ConfigureServices(services =>
             {
-
                 services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = DisabledAuthValues.Scheme;
@@ -56,11 +51,7 @@
 
                 //Testing setupOverride
                 services.Setup(_setupOverride);
- 
             });
         }
-
-        
-
     }
 }

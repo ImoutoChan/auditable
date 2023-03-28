@@ -1,29 +1,29 @@
-﻿namespace Auditable.Configuration;
-
-using System;
-using Collectors;
-using Collectors.EntityId;
-using Collectors.Environment;
-using Collectors.Initiator;
-using Collectors.Request;
-using Delta;
-using Infrastructure;
-using Parsing;
-using Writers;
+﻿using System;
+using Auditable.Collectors.EntityId;
+using Auditable.Collectors.Environment;
+using Auditable.Collectors.Initiator;
+using Auditable.Collectors.Request;
+using Auditable.Delta;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Writers;
+using Auditable.Writers.Console;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Writers.Console;
+
+namespace Auditable.Configuration;
 
 public static class SetupAuditable
 {
     /// <summary>
-    /// Setup Auditable with default setup.
-    /// Consider using the <seealso cref="ConfigureAuditable"/>, which provides better integration with the <see cref="IHostBuilder"/>
+    ///     Setup Auditable with default setup.
+    ///     Consider using the <seealso cref="ConfigureAuditable" />, which provides better integration with the
+    ///     <see cref="IHostBuilder" />
     /// </summary>
     /// <param name="services">the setup</param>
     public static IServiceCollection AddAuditable(this IServiceCollection services)
     {
-        Code.Require(()=> services!= null, nameof(services));
+        Code.Require(() => services != null, nameof(services));
 
         //core
         services.AddTransient<IAuditable, Auditable>();
@@ -48,13 +48,13 @@ public static class SetupAuditable
     }
 
     /// <summary>
-    /// setup Auditable with the defaults
+    ///     setup Auditable with the defaults
     /// </summary>
-    /// <param name="builder">this <see cref="IHostBuilder"/> of the application</param>
+    /// <param name="builder">this <see cref="IHostBuilder" /> of the application</param>
     /// <param name="conf">allows you to provides extensions and overrides</param>
     public static IHostBuilder ConfigureAuditable(this IHostBuilder builder, Action<AuditableExtension> conf = null)
     {
-        Code.Require(()=> builder!= null, nameof(builder));
+        Code.Require(() => builder != null, nameof(builder));
 
         var setup = new AuditableExtension();
         conf?.Invoke(setup);

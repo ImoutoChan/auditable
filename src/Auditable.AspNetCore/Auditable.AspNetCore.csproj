@@ -1,36 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>Auditable.AspNetCore</RootNamespace>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>Auditable.AspNetCore</RootNamespace>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <Version>0.0.1</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Version>0.0.1</Version>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <PackageId>Auditable.AspNetCore</PackageId>
-    <PackageTitle>Auditable AspNet Core</PackageTitle>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>auditing audit-log aspnet</PackageTags>
-    <PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/dbones-labs/auditable</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dbones-labs/Auditable</RepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <IncludeSource>false</IncludeSource>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>Auditable.AspNetCore</PackageId>
+        <PackageTitle>Auditable AspNet Core</PackageTitle>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>auditing audit-log aspnet</PackageTags>
+        <PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/dbones-labs/auditable</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dbones-labs/Auditable</RepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSource>false</IncludeSource>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Auditable\Auditable.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Auditable\Auditable.csproj"/>
+    </ItemGroup>
 
 </Project>

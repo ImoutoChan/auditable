@@ -1,15 +1,21 @@
-﻿namespace Auditable.Writers.Console;
+﻿using System.Threading.Tasks;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
 
-using System;
-using System.Threading.Tasks;
-using Infrastructure;
+namespace Auditable.Writers.Console;
 
 public class ConsoleWriter : IWriter
 {
-    public Task Write(string id, string action, string entry)
+    private readonly JsonSerializer _jsonSerializer;
+
+    public ConsoleWriter(JsonSerializer jsonSerializer)
     {
-        Code.Require(()=> !string.IsNullOrEmpty(entry), nameof(entry));
-        Console.WriteLine(entry);
+        _jsonSerializer = jsonSerializer;
+    }
+
+    public Task Write(string id, string action, AuditableEntry entry)
+    {
+        System.Console.WriteLine(_jsonSerializer.Serialize(entry));
         return Task.CompletedTask;
     }
 }

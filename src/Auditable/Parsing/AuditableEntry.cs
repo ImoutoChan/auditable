@@ -1,10 +1,10 @@
-﻿namespace Auditable.Parsing;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Collectors.Initiator;
-using Collectors.Request;
-using Environment = Collectors.Environment.Environment;
+using Auditable.Collectors.Initiator;
+using Auditable.Collectors.Request;
+using Environment = Auditable.Collectors.Environment.Environment;
+
+namespace Auditable.Parsing;
 
 public class AuditableEntry
 {

@@ -1,7 +1,7 @@
-﻿namespace Auditable;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+namespace Auditable;
 
 public interface IAuditableContext : IDisposable, IAsyncDisposable
 {

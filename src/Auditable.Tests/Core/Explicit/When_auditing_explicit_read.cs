@@ -1,19 +1,21 @@
-﻿using Env = Auditable.Collectors.Environment.Environment;
+﻿using System;
+using System.Collections.Generic;
+using Auditable.Configuration;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Tests.Models.Simple;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using Env = Auditable.Collectors.Environment.Environment;
 
 namespace Auditable.Tests.Core.Explicit
 {
-    using System;
-    using System.Collections.Generic;
-    using Configuration;
-    using global::Auditable.Parsing;
-    using global::Auditable.Tests.Models.Simple;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-
     [Subject("auditable")]
     public class When_auditing_explicit_read
     {
+        private static IAuditableContext _subject;
+        private static TestWriter _writer;
+
         private Establish context = () =>
         {
             SystemDateTime.SetDateTime(() => new DateTime(1980, 01, 02, 10, 3, 15, DateTimeKind.Utc));
@@ -24,15 +26,14 @@ namespace Auditable.Tests.Core.Explicit
 
             _subject = auditable.CreateContext("Person.Removed");
             _subject.Read<Person>("123");
-         
         };
 
-        Because of = () => _subject.WriteLog().Await();
+        private Because of = () => _subject.WriteLog().Await();
 
-        It should_have_a_target_with_audit_removed_and_no_delta = () => 
+        private It should_have_a_target_with_audit_removed_and_no_delta = () =>
             Helpers.Compare(_writer.First.Deserialize(), _expeted);
 
-        static AuditableEntry _expeted => new AuditableEntry
+        private static AuditableEntry _expeted => new()
         {
             Id = Helpers.AuditId,
             Action = "Person.Removed",
@@ -46,8 +47,8 @@ namespace Auditable.Tests.Core.Explicit
             Request = null,
             Targets = new List<AuditableTarget>
             {
-                new AuditableTarget
-                { 
+                new()
+                {
                     Id = "123",
                     Audit = AuditType.Read,
                     Style = ActionStyle.Explicit,
@@ -55,8 +56,5 @@ namespace Auditable.Tests.Core.Explicit
                 }
             }
         };
-
-        static IAuditableContext _subject;
-        static TestWriter _writer;
     }
 }

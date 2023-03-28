@@ -1,8 +1,8 @@
-﻿namespace Auditable;
+﻿using CSharpVitamins;
 
-using CSharpVitamins;
+namespace Auditable;
 
-class AuditIdGenerator : IAuditIdGenerator
+internal class AuditIdGenerator : IAuditIdGenerator
 {
     public string GenerateId()
     {

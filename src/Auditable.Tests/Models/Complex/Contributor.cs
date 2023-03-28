@@ -2,7 +2,9 @@
 {
     public class Contributor
     {
-        protected Contributor() { }
+        protected Contributor()
+        {
+        }
 
         public Contributor(string id, string name, ContributorType contribution)
         {
@@ -14,7 +16,6 @@
         public Contributor(Person person, ContributorType contribution)
             : this(person.Id, person.Name, contribution)
         {
-
         }
 
         public virtual string Name { get; private set; }

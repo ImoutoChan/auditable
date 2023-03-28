@@ -1,17 +1,17 @@
-﻿namespace Auditable.Tests
-{
-    using System;
-    using Writers;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
+﻿using System;
+using Auditable.Writers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
+namespace Auditable.Tests
+{
     public static class ApplicationContainer
     {
-        public static IServiceCollection Setup(this IServiceCollection serviceCollection, 
+        public static IServiceCollection Setup(
+            this IServiceCollection serviceCollection,
             Action<IServiceCollection> setup = null,
             Action<IServiceCollection> configureAuditable = null)
         {
-
             configureAuditable?.Invoke(serviceCollection);
             serviceCollection.AddSingleton<IWriter, TestWriter>();
             serviceCollection.AddSingleton(ctx => (TestWriter)ctx.GetService<IWriter>());

@@ -1,11 +1,17 @@
-﻿namespace Auditable.Tests
-{
-    using Infrastructure;
-    using Newtonsoft.Json.Linq;
-    using Parsing;
+﻿using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Newtonsoft.Json.Linq;
 
+namespace Auditable.Tests
+{
     public class LogEntry
     {
+        public LogEntry(string raw)
+        {
+            Raw = raw;
+            Json = JToken.Parse(raw);
+        }
+
         public string Raw { get; }
         public JToken Json { get; }
 
@@ -22,18 +28,13 @@
                 if (target.Delta != null && target.Delta.HasValues) continue;
                 target.Delta = null;
             }
+
             return entry;
         }
 
         public T GetValue<T>(string xpath)
         {
             return Json.SelectToken(xpath).Value<T>();
-        }
-
-        public LogEntry(string raw)
-        {
-            Raw = raw;
-            Json = JToken.Parse(raw);
         }
     }
 }

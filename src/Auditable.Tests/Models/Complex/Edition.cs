@@ -1,12 +1,14 @@
-﻿namespace Auditable.Tests.Models.Complex
-{
-    using System;
+﻿using System;
 
+namespace Auditable.Tests.Models.Complex
+{
     public class Edition
     {
         protected int _hash;
 
-        protected Edition() { }
+        protected Edition()
+        {
+        }
 
         public Edition(string name, EditionType editionType)
         {
@@ -16,16 +18,13 @@
         }
 
         public virtual DateTime ReleaseDate { get; set; }
-        public virtual string Name { get; private set; }
-        public virtual EditionType Type { get; private set; }
+        public virtual string Name { get; }
+        public virtual EditionType Type { get; }
 
         public override bool Equals(object obj)
         {
             var other = obj as Edition;
-            if (other == null)
-            {
-                return false;
-            }
+            if (other == null) return false;
 
             return other.GetHashCode() == GetHashCode();
         }

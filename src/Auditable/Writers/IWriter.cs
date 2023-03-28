@@ -1,8 +1,9 @@
-﻿namespace Auditable.Writers;
+﻿using System.Threading.Tasks;
+using Auditable.Parsing;
 
-using System.Threading.Tasks;
+namespace Auditable.Writers;
 
 public interface IWriter
 {
-    Task Write(string id, string action, string entry);
+    Task Write(string id, string action, AuditableEntry entry);
 }

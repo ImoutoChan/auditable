@@ -1,7 +1,7 @@
-﻿namespace Auditable;
+﻿using System;
+using Auditable.Infrastructure;
 
-using System;
-using Infrastructure;
+namespace Auditable;
 
 public class Auditable : IAuditable
 {
@@ -14,7 +14,7 @@ public class Auditable : IAuditable
 
     public IAuditableContext CreateContext(string name, params object[] targets)
     {
-        Code.Require(()=> name != null, nameof(name));
+        Code.Require(() => name != null, nameof(name));
 
         var context = _contextCtor();
         context.SetName(name);

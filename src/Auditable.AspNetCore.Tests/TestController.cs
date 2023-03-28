@@ -1,14 +1,14 @@
-﻿namespace Auditable.AspNetCore.Tests
-{
-    using System.Threading.Tasks;
-    using global::Auditable.Tests.Models.Simple;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
+﻿using System.Threading.Tasks;
+using Auditable.Tests.Models.Simple;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
+namespace Auditable.AspNetCore.Tests
+{
     [Route("/test")]
     [Authorize]
-    public class TestController :  Controller
+    public class TestController : Controller
     {
         private readonly IAuditable _auditable;
         private readonly ILogger<TestController> _logger;

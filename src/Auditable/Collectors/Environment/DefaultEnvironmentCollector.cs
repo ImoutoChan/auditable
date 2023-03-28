@@ -1,7 +1,7 @@
-﻿namespace Auditable.Collectors.Environment;
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.Tasks;
+
+namespace Auditable.Collectors.Environment;
 
 public class DefaultEnvironmentCollector : IEnvironmentCollector
 {

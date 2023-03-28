@@ -4,6 +4,5 @@
     {
         public const string Scheme = "disabled scheme";
         public const string Authority = "disabled auth";
-
     }
 }

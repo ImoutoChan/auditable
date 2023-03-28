@@ -1,6 +1,6 @@
-﻿namespace Auditable;
+﻿using Newtonsoft.Json.Linq;
 
-using Newtonsoft.Json.Linq;
+namespace Auditable;
 
 public class Target
 {

@@ -1,18 +1,21 @@
-﻿namespace Auditable.Tests.Format
-{
-    using System;
-    using System.Collections.Generic;
-    using Configuration;
-    using global::Auditable.Parsing;
-    using global::Auditable.Tests.Models.Simple;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-    using Environment = global::Auditable.Collectors.Environment.Environment;
+﻿using System;
+using System.Collections.Generic;
+using Auditable.Configuration;
+using Auditable.Infrastructure;
+using Auditable.Parsing;
+using Auditable.Tests.Models.Simple;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using Environment = Auditable.Collectors.Environment.Environment;
 
+namespace Auditable.Tests.Format
+{
     [Subject("auditable")]
     public class When_creating_a_log_entry
     {
+        private static IAuditableContext _subject;
+        private static TestWriter _writer;
+
         private Establish context = () =>
         {
             SystemDateTime.SetDateTime(() => new DateTime(1980, 01, 02, 10, 3, 15, DateTimeKind.Utc));
@@ -28,12 +31,12 @@
             person.Name = "Dave";
         };
 
-        Because of = () => _subject.WriteLog().Await();
+        private Because of = () => _subject.WriteLog().Await();
 
-        It should_add_the_expected_log_entry = () =>
+        private It should_add_the_expected_log_entry = () =>
             Helpers.Compare(_writer.First.Deserialize(), _expeted, comparer => comparer.IgnoreMember("Delta"));
 
-        static AuditableEntry _expeted => new AuditableEntry
+        private static AuditableEntry _expeted => new()
         {
             Id = Helpers.AuditId,
             Action = "Person.Created",
@@ -47,7 +50,7 @@
             Request = null,
             Targets = new List<AuditableTarget>
             {
-                new AuditableTarget
+                new()
                 {
                     Id = null,
                     Audit = AuditType.Modified,
@@ -56,8 +59,5 @@
                 }
             }
         };
-
-        static IAuditableContext _subject;
-        static TestWriter _writer;
     }
 }

@@ -1,17 +1,23 @@
-﻿namespace Auditable.Tests.Format
-{
-    using System;
-    using System.Linq;
-    using Configuration;
-    using global::Auditable.Tests.Models.Simple;
-    using Infrastructure;
-    using Machine.Specifications;
-    using Microsoft.Extensions.DependencyInjection;
-    using PowerAssert;
+﻿using System;
+using System.Linq;
+using Auditable.Configuration;
+using Auditable.Infrastructure;
+using Auditable.Tests.Models.Simple;
+using Machine.Specifications;
+using Microsoft.Extensions.DependencyInjection;
+using PowerAssert;
 
+namespace Auditable.Tests.Format
+{
     [Subject("auditable")]
     public class When_writing_an_audit_entry
     {
+        private static string entry =
+            $"{{\"Action\":\"Person.Created\",\"DateTime\":\"1980-01-02T10:30:15Z\",\"Initiator\":null,\"Environment\":{{\"Host\":\"{Helpers.Host}\",\"Application\":\"{Helpers.Application}\"}},\"Request\":null,\"Targets\":[{{\"Type\":\"Auditable.Tests.Models.Simple.Person\",\"Id\":null,\"Delta\":{{\"Id\":[null,\"123\"],\"Name\":[null,\"Dave\"],\"Age\":[0,38]}},\"Style\":\"Observed\",\"Audit\":\"Modified\"}}],\"Id\":\"audit-id\"}}";
+
+        private static IAuditableContext _subject;
+        private static TestWriter _writer;
+
         private Establish context = () =>
         {
             SystemDateTime.SetDateTime(() => new DateTime(1980, 01, 02, 10, 30, 15, DateTimeKind.Utc));
@@ -27,13 +33,9 @@
             person.Name = "Dave";
         };
 
-        Because of = () => _subject.WriteLog().Await();
+        private Because of = () => _subject.WriteLog().Await();
 
-        It should_log_using_json_format = () => PAssert.IsTrue(() => _writer.Entries.Any(x=> x.Raw.Equals(entry)));
-
-        static string entry =
-            $"{{\"Action\":\"Person.Created\",\"DateTime\":\"1980-01-02T10:30:15Z\",\"Initiator\":null,\"Environment\":{{\"Host\":\"{Helpers.Host}\",\"Application\":\"{Helpers.Application}\"}},\"Request\":null,\"Targets\":[{{\"Type\":\"Auditable.Tests.Models.Simple.Person\",\"Id\":null,\"Delta\":{{\"Id\":[null,\"123\"],\"Name\":[null,\"Dave\"],\"Age\":[0,38]}},\"Style\":\"Observed\",\"Audit\":\"Modified\"}}],\"Id\":\"audit-id\"}}";
-        static IAuditableContext _subject;
-        static TestWriter _writer;
+        private It should_log_using_json_format =
+            () => PAssert.IsTrue(() => _writer.Entries.Any(x => x.Raw.Equals(entry)));
     }
 }
