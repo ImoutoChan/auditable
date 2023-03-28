@@ -1,16 +1,15 @@
-﻿namespace Auditable.AspNetCore.Collectors
+﻿namespace Auditable.AspNetCore.Collectors;
+
+using System.Threading.Tasks;
+using global::Auditable.Collectors;
+using global::Auditable.Collectors.Request;
+
+class RequestContextCollector : IRequestContextCollector
 {
-    using System.Threading.Tasks;
-    using global::Auditable.Collectors;
-    using global::Auditable.Collectors.Request;
+    public RequestContext RequestContext { get; set; }
 
-    class RequestContextCollector : IRequestContextCollector
+    public Task<RequestContext> Extract()
     {
-        public RequestContext RequestContext { get; set; }
-
-        public Task<RequestContext> Extract()
-        {
-            return Task.FromResult(RequestContext);
-        }
+        return Task.FromResult(RequestContext);
     }
 }

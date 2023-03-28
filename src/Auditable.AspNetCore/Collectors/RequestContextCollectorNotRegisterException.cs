@@ -1,8 +1,7 @@
-﻿namespace Auditable.AspNetCore.Collectors
-{
-    using System;
+﻿namespace Auditable.AspNetCore.Collectors;
 
-    public class RequestContextCollectorNotRegisterException : Exception
-    {
-    }
+using System;
+
+public class RequestContextCollectorNotRegisterException : Exception
+{
 }

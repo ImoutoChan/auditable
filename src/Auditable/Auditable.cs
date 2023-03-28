@@ -1,26 +1,25 @@
-﻿namespace Auditable
+﻿namespace Auditable;
+
+using System;
+using Infrastructure;
+
+public class Auditable : IAuditable
 {
-    using System;
-    using Infrastructure;
+    private readonly Func<IInternalAuditableContext> _contextCtor;
 
-    public class Auditable : IAuditable
+    public Auditable(Func<IInternalAuditableContext> contextCtor)
     {
-        private readonly Func<IInternalAuditableContext> _contextCtor;
+        _contextCtor = contextCtor;
+    }
 
-        public Auditable(Func<IInternalAuditableContext> contextCtor)
-        {
-            _contextCtor = contextCtor;
-        }
+    public IAuditableContext CreateContext(string name, params object[] targets)
+    {
+        Code.Require(()=> name != null, nameof(name));
 
-        public IAuditableContext CreateContext(string name, params object[] targets)
-        {
-            Code.Require(()=> name != null, nameof(name));
+        var context = _contextCtor();
+        context.SetName(name);
+        context.WatchTargets(targets);
 
-            var context = _contextCtor();
-            context.SetName(name);
-            context.WatchTargets(targets);
-
-            return context;
-        }
+        return context;
     }
 }

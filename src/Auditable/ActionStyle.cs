@@ -1,8 +1,7 @@
-﻿namespace Auditable
+﻿namespace Auditable;
+
+public enum ActionStyle
 {
-    public enum ActionStyle
-    {
-        Explicit,
-        Observed
-    }
+    Explicit,
+    Observed
 }

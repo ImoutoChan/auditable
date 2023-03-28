@@ -1,7 +1,6 @@
-﻿namespace Auditable
-{
-    public interface IAuditIdGenerator
-    { 
-        string GenerateId();
-    }
+﻿namespace Auditable;
+
+public interface IAuditIdGenerator
+{ 
+    string GenerateId();
 }

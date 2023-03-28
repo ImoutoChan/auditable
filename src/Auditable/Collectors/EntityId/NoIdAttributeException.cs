@@ -1,14 +1,13 @@
-﻿namespace Auditable.Collectors.EntityId
+﻿namespace Auditable.Collectors.EntityId;
+
+using System;
+
+public class NoIdAttributeException : Exception
 {
-    using System;
+    public Type EntityType { get; }
 
-    public class NoIdAttributeException : Exception
+    public NoIdAttributeException(Type entityType): base($"{entityType.Name} does not have an ID attribute")
     {
-        public Type EntityType { get; }
-
-        public NoIdAttributeException(Type entityType): base($"{entityType.Name} does not have an ID attribute")
-        {
-            EntityType = entityType;
-        }
+        EntityType = entityType;
     }
 }

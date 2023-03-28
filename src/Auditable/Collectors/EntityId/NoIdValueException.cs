@@ -1,16 +1,15 @@
-﻿namespace Auditable.Collectors.EntityId
+﻿namespace Auditable.Collectors.EntityId;
+
+using System;
+
+public class NoIdValueException : Exception
 {
-    using System;
+    public Type EntityType { get; }
+    public string IdAttributeName { get; }
 
-    public class NoIdValueException : Exception
+    public NoIdValueException(Type entityType, string idAttributeName) : base($"{entityType.Name}.{idAttributeName} the id property had no value")
     {
-        public Type EntityType { get; }
-        public string IdAttributeName { get; }
-
-        public NoIdValueException(Type entityType, string idAttributeName) : base($"{entityType.Name}.{idAttributeName} the id property had no value")
-        {
-            EntityType = entityType;
-            IdAttributeName = idAttributeName;
-        }
+        EntityType = entityType;
+        IdAttributeName = idAttributeName;
     }
 }

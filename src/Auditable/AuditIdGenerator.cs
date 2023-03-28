@@ -1,12 +1,11 @@
-﻿namespace Auditable
-{
-    using CSharpVitamins;
+﻿namespace Auditable;
 
-    class AuditIdGenerator : IAuditIdGenerator
+using CSharpVitamins;
+
+class AuditIdGenerator : IAuditIdGenerator
+{
+    public string GenerateId()
     {
-        public string GenerateId()
-        {
-            return ShortGuid.NewGuid();
-        }
+        return ShortGuid.NewGuid();
     }
 }

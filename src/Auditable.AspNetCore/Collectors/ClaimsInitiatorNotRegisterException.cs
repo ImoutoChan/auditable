@@ -1,8 +1,7 @@
-﻿namespace Auditable.AspNetCore.Collectors
-{
-    using System;
+﻿namespace Auditable.AspNetCore.Collectors;
 
-    public class ClaimsInitiatorNotRegisterException : Exception
-    {
-    }
+using System;
+
+public class ClaimsInitiatorNotRegisterException : Exception
+{
 }

@@ -1,12 +1,11 @@
-﻿namespace Auditable.Collectors.Request
-{
-    using System.Threading.Tasks;
+﻿namespace Auditable.Collectors.Request;
 
-    public class NullRequestContextCollector : IRequestContextCollector
+using System.Threading.Tasks;
+
+public class NullRequestContextCollector : IRequestContextCollector
+{
+    public Task<RequestContext> Extract()
     {
-        public Task<RequestContext> Extract()
-        {
-            return Task.FromResult<RequestContext>(null);
-        }
+        return Task.FromResult<RequestContext>(null);
     }
 }

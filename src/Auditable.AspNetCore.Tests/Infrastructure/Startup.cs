@@ -19,7 +19,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.AddOpenTelemetryTracerProvider(
+            services.AddOpenTelemetry().WithTracing(
                 (builder) => builder
                     .AddAspNetCoreInstrumentation()
                     .AddConsoleExporter()

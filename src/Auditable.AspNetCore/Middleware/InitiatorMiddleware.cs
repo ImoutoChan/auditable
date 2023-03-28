@@ -1,41 +1,40 @@
-﻿namespace Auditable.AspNetCore.Middleware
+﻿namespace Auditable.AspNetCore.Middleware;
+
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Collectors;
+using global::Auditable.Collectors;
+using global::Auditable.Collectors.Initiator;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+
+public class InitiatorMiddleware
 {
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-    using Collectors;
-    using global::Auditable.Collectors;
-    using global::Auditable.Collectors.Initiator;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
+    private readonly RequestDelegate _next;
 
-    public class InitiatorMiddleware
+    public InitiatorMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public InitiatorMiddleware(RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var initiatorCollector = context.RequestServices.GetService<IInitiatorCollector>() as ClaimsInitiatorCollector;
+        if (initiatorCollector == null)
         {
-            _next = next;
+            throw new ClaimsInitiatorNotRegisterException();
+        }
+        var user = context.User;
+        if (user != null)
+        {
+            //https://www.jerriepelser.com/blog/authenticate-oauth-aspnet-core-2/
+            initiatorCollector.Initiator = new Initiator
+            {
+                Id =  user.FindFirstValue(ClaimTypes.NameIdentifier), 
+                Name=  user.FindFirstValue(ClaimTypes.Name) 
+            };
         }
 
-        public async Task InvokeAsync(HttpContext context)
-        {
-            var initiatorCollector = context.RequestServices.GetService<IInitiatorCollector>() as ClaimsInitiatorCollector;
-            if (initiatorCollector == null)
-            {
-                throw new ClaimsInitiatorNotRegisterException();
-            }
-            var user = context.User;
-            if (user != null)
-            {
-                //https://www.jerriepelser.com/blog/authenticate-oauth-aspnet-core-2/
-                initiatorCollector.Initiator = new Initiator
-                {
-                    Id =  user.FindFirstValue(ClaimTypes.NameIdentifier), 
-                    Name=  user.FindFirstValue(ClaimTypes.Name) 
-                };
-            }
-
-            await _next(context);
-        }
+        await _next(context);
     }
 }

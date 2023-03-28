@@ -1,16 +1,15 @@
-﻿namespace Auditable.AspNetCore.Collectors
+﻿namespace Auditable.AspNetCore.Collectors;
+
+using System.Threading.Tasks;
+using global::Auditable.Collectors;
+using global::Auditable.Collectors.Initiator;
+
+class ClaimsInitiatorCollector : IInitiatorCollector
 {
-    using System.Threading.Tasks;
-    using global::Auditable.Collectors;
-    using global::Auditable.Collectors.Initiator;
+    public Initiator Initiator { get; set; }
 
-    class ClaimsInitiatorCollector : IInitiatorCollector
+    public Task<Initiator> Extract()
     {
-        public Initiator Initiator { get; set; }
-
-        public Task<Initiator> Extract()
-        {
-            return Task.FromResult(Initiator);
-        }
+        return Task.FromResult(Initiator);
     }
 }

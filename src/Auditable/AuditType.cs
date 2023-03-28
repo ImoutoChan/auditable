@@ -1,9 +1,8 @@
-﻿namespace Auditable
+﻿namespace Auditable;
+
+public enum AuditType
 {
-    public enum AuditType
-    {
-        Read,
-        Removed,
-        Modified
-    }
+    Read,
+    Removed,
+    Modified
 }

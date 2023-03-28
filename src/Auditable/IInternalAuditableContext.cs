@@ -1,7 +1,6 @@
-﻿namespace Auditable
+﻿namespace Auditable;
+
+public interface IInternalAuditableContext : IAuditableContext
 {
-    public interface IInternalAuditableContext : IAuditableContext
-    {
-        void SetName(string name);
-    }
+    void SetName(string name);
 }
