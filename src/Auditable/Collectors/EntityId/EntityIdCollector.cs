@@ -1,59 +1,55 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Auditable.Infrastructure;
 
 namespace Auditable.Collectors.EntityId;
 
-public class EntityIdCollector : IEntityIdCollector
+internal class EntityIdCollector : IEntityIdCollector
 {
-    public string Extract(object instance)
+    private static readonly ConcurrentDictionary<Type, Func<object, string?>> IdExtractorCache = new();
+    
+    public string Extract<T>(T instance) where T : notnull
     {
-        Code.Require(() => instance != null, nameof(instance));
+        var type = typeof(T);
 
-        var type = instance.GetType();
-        var fields = AllFields(AllTypes(type));
-
-        var idFieldPatterns = new[]
+        var extractor = IdExtractorCache.GetOrAdd(type, inst =>
         {
-            "_id",
-            GetPropertyBackingFieldName("Id"),
-            GetPropertyBackingFieldName($"{type.Name}Id"),
-            "id",
-            "Id"
-        }.ToList();
+            var fields = GetAllFields(GetAllTypes(type));
 
-        var idField = fields.FirstOrDefault(x => idFieldPatterns.Contains(x.Name));
+            var idFieldPatterns = new[]
+            {
+                "_id",
+                GetPropertyBackingFieldName("Id"),
+                GetPropertyBackingFieldName($"{type.Name}Id"),
+                "id",
+                "Id"
+            }.ToList();
 
-        if (idField == null) throw new NoIdAttributeException(instance.GetType());
+            var idField = fields.FirstOrDefault(x => idFieldPatterns.Contains(x.Name));
 
+            if (idField == null) 
+                throw new NoIdAttributeException(type);
 
-        var id = idField.GetValue(instance)?.ToString();
+            return i => idField.GetValue(i)?.ToString();
+        });
 
-        return id;
+        return extractor.Invoke(instance) ?? throw new NoIdValueException(type);
     }
 
-    private IEnumerable<FieldInfo> AllFields(IEnumerable<Type> typeTree)
-    {
-        Code.Require(() => typeTree != null, nameof(typeTree));
-        return typeTree.SelectMany(x => x.GetTypeInfo().DeclaredFields);
-    }
+    private static IEnumerable<FieldInfo> GetAllFields(IEnumerable<Type> typeTree) 
+        => typeTree.SelectMany(x => x.GetTypeInfo().DeclaredFields);
 
-    private IEnumerable<Type> AllTypes(Type currentType)
+    private static IEnumerable<Type> GetAllTypes(Type currentType)
     {
-        Code.Require(() => currentType != null, nameof(currentType));
-
         if (currentType.BaseType != null)
-            foreach (var type in AllTypes(currentType.BaseType))
+            foreach (var type in GetAllTypes(currentType.BaseType))
                 yield return type;
 
         yield return currentType;
     }
 
-    private string GetPropertyBackingFieldName(string propertyName)
-    {
-        Code.Require(() => !string.IsNullOrEmpty(propertyName), nameof(propertyName));
-        return $"<{propertyName}>k__BackingField";
-    }
+    private static string GetPropertyBackingFieldName(string propertyName) 
+        => $"<{propertyName}>k__BackingField";
 }

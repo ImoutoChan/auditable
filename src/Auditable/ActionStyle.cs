@@ -2,6 +2,6 @@
 
 public enum ActionStyle
 {
-    Explicit,
-    Observed
+    Explicit = 0,
+    Observed = 1
 }

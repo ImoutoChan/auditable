@@ -7,5 +7,7 @@ namespace Auditable.Collectors.Initiator;
 /// </summary>
 public interface IInitiatorCollector
 {
-    Task<Initiator> Extract();
+    Task<Initiator?> Extract();
 }
+
+public record Initiator(string Id, string Name);

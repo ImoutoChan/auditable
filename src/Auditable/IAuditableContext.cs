@@ -5,17 +5,21 @@ namespace Auditable;
 
 public interface IAuditableContext : IDisposable, IAsyncDisposable
 {
-    void WatchTargets(params object[] targets);
+    /// <summary>
+    /// All changes in observed targets will be audited after auditable context is disposed.
+    /// </summary>
+    /// <param name="targets"></param>
+    void Observe<T>(params T[] targets) where T : notnull;
     
-    void Created<T>(T target);
+    void Created<T>(T target) where T : notnull;
     
-    void Removed<T>(string id);
+    void Removed<T>(string id) where T : notnull;
     
-    void Removed<T>(T target);
+    void Removed<T>(T target) where T : notnull;
     
-    void Read<T>(string id);
+    void Read<T>(string id) where T : notnull;
     
-    void Read<T>(T target);
+    void Read<T>(T target) where T : notnull;
     
-    Task WriteLog();
+    Task Flush();
 }

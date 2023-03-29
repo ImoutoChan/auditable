@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace Auditable.Infrastructure;
 
-public class JsonSerializer
+internal class AuditJsonSerializer : IAuditJsonSerializer
 {
-    public string Serialize(object instance)
-    {
-        return JsonConvert.SerializeObject(instance);
-    }
+    private readonly Func<object, string> _serializer = JsonConvert.SerializeObject;
+    
+    public string Serialize<T>(T instance) where T : notnull => _serializer(instance);
+}
 
-    public T Deserialize<T>(string payload)
-    {
-        return JsonConvert.DeserializeObject<T>(payload);
-    }
+public interface IAuditJsonSerializer
+{
+    string Serialize<T>(T instance) where T : notnull;
 }

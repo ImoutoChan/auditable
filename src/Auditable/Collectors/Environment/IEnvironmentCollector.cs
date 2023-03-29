@@ -9,3 +9,5 @@ public interface IEnvironmentCollector
 {
     Task<Environment> Extract();
 }
+
+public record Environment(string Host, string Application);

@@ -5,5 +5,5 @@ namespace Auditable.Writers;
 
 public interface IWriter
 {
-    Task Write(string id, string action, AuditableEntry entry);
+    Task Write(string auditId, string action, AuditableEntry entry);
 }

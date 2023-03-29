@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Auditable.Collectors.EntityId;
 using Auditable.Collectors.Environment;
 using Auditable.Collectors.Initiator;
 using Auditable.Collectors.Request;
-using Auditable.Infrastructure;
 
 namespace Auditable.Parsing;
 
-public class DefaultParser : IParser
+internal class DefaultParser : IParser
 {
     private readonly IEntityIdCollector _entityIdCollector;
     private readonly IEnvironmentCollector _environmentCollector;
@@ -30,14 +30,11 @@ public class DefaultParser : IParser
 
     public async Task<AuditableEntry> Parse(string id, string actionName, IEnumerable<Target> targets)
     {
-        Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
-        Code.Require(() => !string.IsNullOrEmpty(actionName), nameof(actionName));
-
         var payload = new AuditableEntry
         {
             Id = id,
             Action = actionName,
-            DateTime = SystemDateTime.UtcNow,
+            DateTime = DateTimeOffset.Now,
 
             Environment = await _environmentCollector.Extract(),
             Initiator = await _initiatorCollector.Extract(),

@@ -2,8 +2,8 @@
 
 public enum AuditType
 {
-    Read,
-    Removed,
-    Modified,
-    Created
+    Read = 0,
+    Removed = 1,
+    Modified = 2,
+    Created = 3
 }

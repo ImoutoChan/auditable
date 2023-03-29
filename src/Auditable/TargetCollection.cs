@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Auditable.Collectors.EntityId;
-using Auditable.Infrastructure;
 
 namespace Auditable;
 
@@ -13,81 +13,34 @@ internal class TargetCollection : IEnumerable<Target>
     private readonly Dictionary<string, Target> _idLookup = new();
     private readonly Dictionary<object, Target> _instanceLookup = new();
 
-    public TargetCollection(IEntityIdCollector idCollector)
-    {
-        _idCollector = idCollector;
-    }
+    public TargetCollection(IEntityIdCollector idCollector) => _idCollector = idCollector;
 
-    public IEnumerator<Target> GetEnumerator()
-    {
-        var items = _idLookup.Values.Union(_instanceLookup.Values);
-        return items.GetEnumerator();
-    }
+    public IEnumerator<Target> GetEnumerator() => _idLookup.Values.Union(_instanceLookup.Values).GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    
+    public bool TryGet(Type type, string id, [NotNullWhen(true)] out Target? target)
     {
-        return GetEnumerator();
-    }
-
-    public bool TryGet(object instance, Type type, string id, out Target target)
-    {
-        var confirmedId = id ?? _idCollector.Extract(instance);
-        return string.IsNullOrEmpty(confirmedId)
-            ? TryGet(instance, out target)
-            : TryGet(type, id, out target);
-    }
-
-    public bool TryGet(object instance, out Target target)
-    {
-        Code.Require(() => instance != null, nameof(target));
-        return _instanceLookup.TryGetValue(instance, out target);
-    }
-
-    public bool TryGet(Type type, string id, out Target target)
-    {
-        Code.Require(() => type != null, nameof(type));
-        Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
-
         var key = GetKey(type, id);
         return _idLookup.TryGetValue(key, out target);
     }
 
-    private string GetKey(Type type, string id)
-    {
-        return $"{type.FullName}-{id}";
-    }
-
     public void Add(Type type, string id, Target target)
     {
-        Code.Require(() => type != null, nameof(type));
-        Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
-        Code.Require(() => target != null, nameof(target));
-
         var key = GetKey(type, id);
 
-        if (_idLookup.ContainsKey(key)) return;
+        if (_idLookup.ContainsKey(key)) 
+            return;
 
         _idLookup.Add(key, target);
     }
 
 
-    public void Add(object instance, Target target)
+    public void Add<T>(T instance, Target target) where T : notnull
     {
-        Code.Require(() => instance != null, nameof(instance));
-        Code.Require(() => target != null, nameof(target));
-
         var id = _idCollector.Extract(instance);
-        var hasId = id != null;
-        if (hasId)
-        {
-            var type = instance.GetType();
-            Add(type, id, target);
-            return;
-        }
-
-        var processedInstance = _instanceLookup.ContainsKey(instance);
-        if (processedInstance) return;
-
-        _instanceLookup.Add(instance, target);
+        Add(typeof(T), id, target);
     }
+
+    private static string GetKey(Type type, string id) => $"{type.FullName}-{id}";
 }

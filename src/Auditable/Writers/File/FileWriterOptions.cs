@@ -1,14 +1,13 @@
-﻿using System.IO;
-using Auditable.Infrastructure;
+﻿using System;
+using System.IO;
 
 namespace Auditable.Writers.File;
 
 public class FileWriterOptions
 {
-    public GetFileName GetFileName { get; set; } = (id, action) =>
+    public Func<string, string, string> GetFileName { get; set; } = (id, action) =>
     {
-        Code.Require(() => !string.IsNullOrEmpty(id), nameof(id));
-        var date = SystemDateTime.UtcNow.ToString("yyyy-MM-dd-H-mm-ss");
+        var date = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd-H-mm-ss");
         return $"{date}_{id}.auditable";
     };
 

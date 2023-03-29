@@ -6,9 +6,14 @@ namespace Auditable.Parsing;
 
 public class AuditableTarget
 {
-    public string Type { get; set; }
-    public string Id { get; set; }
-    public JToken Delta { get; set; }
+    public required string Id { get; set; }
+
+    public required string Type { get; set; }
+
+    /// <summary>
+    /// Can be null when type is read or removed.
+    /// </summary>
+    public JToken? Delta { get; set; }
 
     [JsonConverter(typeof(StringEnumConverter))]
     public ActionStyle Style { get; set; }

@@ -8,11 +8,17 @@ namespace Auditable.Parsing;
 
 public class AuditableEntry
 {
-    public string Action { get; set; }
-    public DateTime DateTime { get; set; }
-    public Initiator Initiator { get; set; }
-    public Environment Environment { get; set; }
-    public RequestContext Request { get; set; }
-    public IEnumerable<AuditableTarget> Targets { get; set; }
-    public string Id { get; set; }
+    public required string Id { get; set; }
+
+    public required string Action { get; set; }
+
+    public required DateTimeOffset DateTime { get; set; }
+
+    public Initiator? Initiator { get; set; }
+
+    public required Environment Environment { get; set; }
+
+    public RequestContext? Request { get; set; }
+
+    public required IEnumerable<AuditableTarget> Targets { get; set; }
 }
