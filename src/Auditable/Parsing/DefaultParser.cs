@@ -42,7 +42,7 @@ internal class DefaultParser : IParser
             Targets = targets.Select(x => new AuditableTarget
             {
                 Delta = x.Delta,
-                Id = x.Id ?? _entityIdCollector.Extract(x),
+                Id = x.Id,
                 Type = x.Type,
                 Style = x.ActionStyle,
                 Audit = x.ActionStyle == ActionStyle.Explicit

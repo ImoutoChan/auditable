@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>Auditable</PackageId>
-        <PackageTitle>Auditable</PackageTitle>
+        <PackageId>Imouto.Auditable</PackageId>
+        <PackageTitle>Imouto.Auditable</PackageTitle>
         <Description>Simple context auditing library, forked and rewrited.</Description>
         <PackageTags>auditing audit-log audit</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
