@@ -9,10 +9,12 @@ namespace Auditable.Writers.File;
 internal class FileWriter : IWriter
 {
     private readonly IOptions<FileWriterOptions> _options;
+    private readonly IAuditJsonSerializer _auditJsonSerializer;
 
-    public FileWriter(IOptions<FileWriterOptions> options)
+    public FileWriter(IOptions<FileWriterOptions> options, IAuditJsonSerializer auditJsonSerializer)
     {
         _options = options;
+        _auditJsonSerializer = auditJsonSerializer;
     }
 
     public Task Write(string auditId, string action, AuditableEntry entry)
@@ -20,7 +22,7 @@ internal class FileWriter : IWriter
         var file = _options.Value.GetFileName(auditId, action);
         var folder = _options.Value.Folder;
         var path = Path.Combine(folder, file);
-        System.IO.File.WriteAllText(path, AuditJsonSerializer.Serialize(entry));
+        System.IO.File.WriteAllText(path, _auditJsonSerializer.Serialize(entry));
         return Task.CompletedTask;
     }
 }

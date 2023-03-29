@@ -17,18 +17,21 @@ internal class AuditableContext : IInternalAuditableContext
     private readonly IParser _parser;
     private readonly TargetCollection _targets;
     private readonly IWriter _writer;
+    private readonly IAuditJsonSerializer _auditJsonSerializer;
     private string _name;
 
     public AuditableContext(
         IParser parser,
         IEntityIdCollector entityIdCollector,
         IDeltaCalculator engine,
-        IWriter writer)
+        IWriter writer,
+        IAuditJsonSerializer auditJsonSerializer)
     {
         _parser = parser;
         _entityIdCollector = entityIdCollector;
         _engine = engine;
         _writer = writer;
+        _auditJsonSerializer = auditJsonSerializer;
         _targets = new TargetCollection(_entityIdCollector);
         _name = "Unknown context";
     }
@@ -37,7 +40,7 @@ internal class AuditableContext : IInternalAuditableContext
     {
         foreach (var instance in targets)
         {
-            var copy = AuditJsonSerializer.Serialize(instance);
+            var copy = _auditJsonSerializer.Serialize(instance);
             var id = _entityIdCollector.Extract(instance);
             var type = typeof(T);
 
@@ -80,7 +83,7 @@ internal class AuditableContext : IInternalAuditableContext
             if (target.ActionStyle == ActionStyle.Explicit || target.Instance == null || target.Before == null)
                 continue;
 
-            var after = AuditJsonSerializer.Serialize(target.Instance);
+            var after = _auditJsonSerializer.Serialize(target.Instance);
             target.Delta = _engine.Calculate(target.Before, after);
         }
 
@@ -133,7 +136,7 @@ internal class AuditableContext : IInternalAuditableContext
 
         var type = typeof(T);
 
-        var entry = AuditJsonSerializer.Serialize(target);
+        var entry = _auditJsonSerializer.Serialize(target);
         var delta = JToken.Parse(entry);
 
         _targets.Add(type, id, new Target
