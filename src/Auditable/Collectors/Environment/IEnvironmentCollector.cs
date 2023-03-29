@@ -10,4 +10,4 @@ public interface IEnvironmentCollector
     Task<Environment> Extract();
 }
 
-public record Environment(string Host, string Application);
+public record Environment(string ApplicationName, string EnvironmentName);
