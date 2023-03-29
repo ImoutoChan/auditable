@@ -15,7 +15,7 @@ Changes:
 
 [![Nuget](https://img.shields.io/badge/nuget-auditable-blue)](https://www.nuget.org/packages/Imouto.Auditable)
 ```
-<PackageReference Include="Imouto.Auditable" Version="2.0.0" />
+<PackageReference Include="Imouto.Auditable" Version="2.1.0" />
 ```
 
 
