@@ -13,13 +13,14 @@ Changes:
 * Aspnet and tests projects are removed
 * Overall simplifications and style updates
 
-Changes in 2.2.0:
+Changes in 2.2:
 * Auditable.CreateContext now creates new context each time it's called
 * Upgrade to net8.0
+* Clear targets after flush
 
 [![Nuget](https://img.shields.io/badge/nuget-auditable-blue)](https://www.nuget.org/packages/Imouto.Auditable)
 ```
-<PackageReference Include="Imouto.Auditable" Version="2.2.0" />
+<PackageReference Include="Imouto.Auditable" Version="2.2.2" />
 ```
 
 

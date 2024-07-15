@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Auditable.Collectors.EntityId;
 
 namespace Auditable;
@@ -11,11 +10,10 @@ internal class TargetCollection : IEnumerable<Target>
 {
     private readonly IEntityIdCollector _idCollector;
     private readonly Dictionary<string, Target> _idLookup = new();
-    private readonly Dictionary<object, Target> _instanceLookup = new();
 
     public TargetCollection(IEntityIdCollector idCollector) => _idCollector = idCollector;
 
-    public IEnumerator<Target> GetEnumerator() => _idLookup.Values.Union(_instanceLookup.Values).GetEnumerator();
+    public IEnumerator<Target> GetEnumerator() => _idLookup.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     
@@ -28,11 +26,7 @@ internal class TargetCollection : IEnumerable<Target>
     public void Add(Type type, string id, Target target)
     {
         var key = GetKey(type, id);
-
-        if (_idLookup.ContainsKey(key)) 
-            return;
-
-        _idLookup.Add(key, target);
+        _idLookup.TryAdd(key, target);
     }
 
 
@@ -41,6 +35,10 @@ internal class TargetCollection : IEnumerable<Target>
         var id = _idCollector.Extract(instance);
         Add(typeof(T), id, target);
     }
+    
+    public void Clear() => _idLookup.Clear();
+    
+    public int Count => _idLookup.Count;
 
     private static string GetKey(Type type, string id) => $"{type.FullName}-{id}";
 }

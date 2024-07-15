@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Auditable.Collectors.EntityId;
@@ -78,6 +79,9 @@ internal class AuditableContext : IInternalAuditableContext
 
     public async Task Flush()
     {
+        if (_targets.Count == 0)
+            return;
+        
         foreach (var target in _targets)
         {
             if (target.ActionStyle == ActionStyle.Explicit || target.Instance == null || target.Before == null)
@@ -90,6 +94,7 @@ internal class AuditableContext : IInternalAuditableContext
         var auditId = Guid.NewGuid().ToString();
         var entry = await _parser.Parse(auditId, _name, _targets);
         await _writer.Write(auditId, _name, entry);
+        _targets.Clear();
     }
 
     public void SetName(string name) => _name = name;
