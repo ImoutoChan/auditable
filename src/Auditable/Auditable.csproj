@@ -18,7 +18,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>false</IncludeSource>
         <Copyright>dbones, ImoutoChan</Copyright>
-        <Version>2.2.2</Version>
+        <Version>2.2.3</Version>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
