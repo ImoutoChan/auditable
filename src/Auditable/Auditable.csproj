@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -12,14 +12,15 @@
         <PackageTitle>Imouto.Auditable</PackageTitle>
         <Description>Simple context auditing library, forked and rewrited.</Description>
         <PackageTags>auditing audit-log audit</PackageTags>
-        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageProjectUrl>https://github.com/ImoutoChan/auditable</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ImoutoChan/auditable</RepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <IncludeSource>false</IncludeSource>
         <Copyright>dbones, ImoutoChan</Copyright>
-        <Version>2.1.0</Version>
+        <Version>2.2.0</Version>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,11 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

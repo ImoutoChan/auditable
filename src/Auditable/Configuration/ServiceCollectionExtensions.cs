@@ -20,8 +20,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAuditable(this IServiceCollection services)
     {
         //core
-        services.AddScoped<IInternalAuditableContext, AuditableContext>();
-        services.AddScoped<Func<IInternalAuditableContext>>(x => x.GetRequiredService<IInternalAuditableContext>);
+        services.AddTransient<IInternalAuditableContext, AuditableContext>();
+        services.AddTransient<Func<IInternalAuditableContext>>(x => x.GetRequiredService<IInternalAuditableContext>);
         services.AddTransient<IAuditable, Auditable>();
         services.AddTransient<IDeltaCalculator, DeltaCalculator>();
         services.AddTransient<IAuditJsonSerializer, AuditJsonSerializer>();
